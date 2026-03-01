@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Digital Risk Twins — Systematic Review &amp; Architectural Synthesis</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy:      #06205C;
+    --blue:      #0066B3;
+    --sky:       #99DAF1;
+    --lightblue: #D6EFF9;
+    --accent:    #E8830A;
+    --accent2:   #C0392B;
+    --green:     #1A7A4A;
+    --purple:    #5B2D8E;
+    --white:     #FFFFFF;
+    --offwhite:  #F7F9FC;
+    --gray1:     #EEF2F7;
+    --gray2:     #C8D4E3;
+    --gray3:     #7A8BA0;
+    --text:      #1A2535;
+    --textmid:   #3A4A60;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    font-size: 10.5pt;
+    color: var(--text);
+    background: #E8EDF3;
+    line-height: 1.65;
+  }
+
+  /* PAGE WRAPPER */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: var(--white);
+    margin: 10mm auto;
+    box-shadow: 0 4px 40px rgba(6,32,92,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ─── COVER PAGE ─── */
+  .cover {
+    width: 100%;
+    min-height: 297mm;
+    background: linear-gradient(155deg, #06205C 0%, #0A317A 45%, #0066B3 75%, #1880C8 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: rgba(153,218,241,0.07);
+    top: -200px; right: -200px;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    bottom: -100px; left: -150px;
+  }
+  .cover-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 20mm 20mm;
+  }
+  .cover-header {
+    width: 100%; padding: 14mm 16mm 10mm;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    position: relative; z-index:2;
+  }
+  .cover-logos { display: flex; align-items: center; gap: 14px; }
+  .cover-logos img {
+    height: 55px; width: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.92;
+  }
+  .cover-logos img.uma-logo {
+    height: 60px;
+    filter: none;
+    opacity: 0.95;
+  }
+  .cover-divider {
+    width: 1px; height: 40px;
+    background: rgba(255,255,255,0.3);
+  }
+  .cover-badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 5px 14px;
+    color: rgba(255,255,255,0.9);
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cover-body {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 10mm 18mm;
+    text-align: center;
+    position: relative; z-index:2;
+  }
+  .cover-tag {
+    background: rgba(153,218,241,0.2);
+    border: 1px solid rgba(153,218,241,0.4);
+    border-radius: 4px;
+    padding: 4px 16px;
+    color: var(--sky);
+    font-size: 8pt;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .cover-title {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 30pt;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .cover-subtitle {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17pt;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sky);
+    margin-bottom: 28px;
+    line-height: 1.3;
+  }
+  .cover-desc {
+    font-size: 10pt;
+    color: rgba(255,255,255,0.75);
+    max-width: 140mm;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+  .cover-stats {
+    display: flex; gap: 28px; justify-content: center;
+    margin-bottom: 36px;
+  }
+  .cover-stat {
+    text-align: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    padding: 12px 20px;
+    min-width: 65px;
+  }
+  .cover-stat-num {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 26pt;
+    font-weight: 700;
+    color: var(--sky);
+    line-height: 1;
+    display: block;
+  }
+  .cover-stat-label {
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+  .cover-footer {
+    width: 100%; padding: 10mm 16mm;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    display: flex; justify-content: space-between; align-items: flex-end;
+    position: relative; z-index:2;
+  }
+  .cover-meta { color: rgba(255,255,255,0.6); font-size: 8pt; line-height: 1.8; }
+  .cover-meta strong { color: rgba(255,255,255,0.85); }
+  .cover-kw {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; max-width: 100mm;
+  }
+  .cover-kw span {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    padding: 2px 8px;
+    color: rgba(255,255,255,0.7);
+    font-size: 7.5pt;
+  }
+
+  /* ─── CONTENT PAGES ─── */
+  .content-page {
+    width: 100%;
+    padding: 0;
+    background: var(--white);
+    position: relative;
+  }
+  .page-header {
+    background: linear-gradient(90deg, var(--navy) 0%, var(--blue) 100%);
+    padding: 6mm 12mm 5mm;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .page-header-left { display: flex; align-items: center; gap: 10px; }
+  .page-header img {
+    height: 28px; width: auto;
+    filter: brightness(0) invert(1); opacity: 0.85;
+  }
+  .page-header-title {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .page-header-right {
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+  }
+
+  .content-body {
+    padding: 8mm 12mm 10mm;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gray1);
+    position: relative;
+  }
+  .section-header::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0;
+    width: 60px; height: 2px;
+    background: var(--blue);
+  }
+  .section-num {
+    flex-shrink: 0;
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    color: white;
+    font-family: 'Crimson Pro', serif;
+    font-size: 16pt;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+    box-shadow: 0 3px 10px rgba(6,32,92,0.25);
+  }
+  .section-title-group {}
+  .section-title {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17pt;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.15;
+    margin-bottom: 2px;
+  }
+  .section-subtitle {
+    font-size: 8.5pt;
+    color: var(--blue);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ─── TEXT STYLES ─── */
+  p { margin-bottom: 9px; font-size: 10pt; color: var(--textmid); line-height: 1.68; }
+  strong { color: var(--navy); font-weight: 700; }
+  em { color: var(--blue); font-style: italic; }
+
+  /* ─── DOCTRINE CARDS ─── */
+  .doctrine-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px; margin: 14px 0;
+  }
+  .doctrine-card {
+    border-radius: 10px;
+    padding: 14px;
+    position: relative; overflow: hidden;
+  }
+  .doctrine-card.eng {
+    background: linear-gradient(135deg, #EEF4FF, #D6E8FB);
+    border: 1px solid #B3CEED;
+  }
+  .doctrine-card.env {
+    background: linear-gradient(135deg, #EAF5EE, #D0EDD8);
+    border: 1px solid #A8D5B4;
+  }
+  .doctrine-card.risk {
+    background: linear-gradient(135deg, #FFF4E8, #FDEBD5);
+    border: 1px solid #F0C898;
+  }
+  .doctrine-icon { font-size: 22pt; margin-bottom: 6px; }
+  .doctrine-name {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .doctrine-card.eng .doctrine-name { color: var(--navy); }
+  .doctrine-card.env .doctrine-name { color: var(--green); }
+  .doctrine-card.risk .doctrine-name { color: var(--accent); }
+  .doctrine-desc {
+    font-size: 8.5pt;
+    color: var(--textmid);
+    line-height: 1.5;
+  }
+  .doctrine-focus {
+    margin-top: 8px;
+    font-size: 7.5pt;
+    font-style: italic;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .doctrine-card.eng .doctrine-focus { background: rgba(0,102,179,0.1); color: var(--blue); }
+  .doctrine-card.env .doctrine-focus { background: rgba(26,122,74,0.1); color: var(--green); }
+  .doctrine-card.risk .doctrine-focus { background: rgba(232,131,10,0.1); color: var(--accent); }
+
+  /* ─── HAZARD CARDS ─── */
+  .hazard-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin: 12px 0;
+  }
+  .hazard-card {
+    border-radius: 8px; padding: 12px 14px;
+    border-left: 4px solid;
+    background: var(--offwhite);
+  }
+  .hazard-card.hydro { border-color: #0066B3; }
+  .hazard-card.geo   { border-color: #C0392B; }
+  .hazard-card.clim  { border-color: #E8830A; }
+  .hazard-card.tech  { border-color: #5B2D8E; }
+  .hazard-card.multi { border-color: #1A7A4A; border-left-width: 4px; }
+  .hazard-header { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .hazard-icon { font-size: 15pt; }
+  .hazard-title { font-size: 9.5pt; font-weight: 700; }
+  .hazard-card.hydro .hazard-title { color: #0066B3; }
+  .hazard-card.geo   .hazard-title { color: #C0392B; }
+  .hazard-card.clim  .hazard-title { color: #E8830A; }
+  .hazard-card.tech  .hazard-title { color: #5B2D8E; }
+  .hazard-card.multi .hazard-title { color: #1A7A4A; }
+  .hazard-badge {
+    margin-left: auto;
+    font-size: 7pt;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .badge-mature { background: #D0EDD8; color: #1A7A4A; }
+  .badge-fast   { background: #FDDEDE; color: #C0392B; }
+  .badge-slow   { background: #FFF0D6; color: #E8830A; }
+  .badge-cascade{ background: #EEDDFF; color: #5B2D8E; }
+  .badge-complex{ background: #D4F0E4; color: #1A7A4A; }
+  .hazard-body  { font-size: 8.5pt; color: var(--textmid); line-height: 1.55; }
+  .hazard-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .hazard-pill  {
+    font-size: 7pt; padding: 2px 7px; border-radius: 3px;
+    background: rgba(6,32,92,0.08); color: var(--navy); font-weight: 600;
+  }
+
+  /* ─── ARCH DIVIDE SECTION ─── */
+  .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  .arch-box {
+    border-radius: 10px;
+    border: 1.5px solid;
+    overflow: hidden;
+  }
+  .arch-box.state  { border-color: #0066B3; }
+  .arch-box.scenario { border-color: #C0392B; }
+  .arch-head {
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .arch-box.state  .arch-head { background: linear-gradient(90deg, #0066B3, #1880C8); }
+  .arch-box.scenario .arch-head { background: linear-gradient(90deg, #C0392B, #D9534F); }
+  .arch-head-icon { font-size: 16pt; }
+  .arch-head-text { color: white; }
+  .arch-head-title { font-size: 10pt; font-weight: 700; line-height: 1.2; }
+  .arch-head-sub   { font-size: 7.5pt; opacity: 0.82; }
+  .arch-body { padding: 12px 14px; background: var(--offwhite); }
+  .arch-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+  .arch-label {
+    font-size: 7.5pt; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; min-width: 72px; flex-shrink: 0;
+  }
+  .arch-box.state  .arch-label { color: var(--blue); }
+  .arch-box.scenario .arch-label { color: var(--accent2); }
+  .arch-value { font-size: 8.5pt; color: var(--textmid); line-height: 1.4; }
+  .algo-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .algo-tag  {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt; padding: 2px 7px; border-radius: 3px;
+    font-weight: 600;
+  }
+  .arch-box.state  .algo-tag { background: rgba(0,102,179,0.1); color: var(--blue); }
+  .arch-box.scenario .algo-tag { background: rgba(192,57,43,0.1); color: var(--accent2); }
+
+  /* ─── EQUATION BOX ─── */
+  .equation-box {
+    background: linear-gradient(135deg, var(--navy) 0%, #0A317A 100%);
+    border-radius: 10px; padding: 16px 20px; margin: 14px 0;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .equation-box::before {
+    content:''; position:absolute; inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .equation-label {
+    color: var(--sky); font-size: 7.5pt; letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700; margin-bottom: 8px;
+  }
+  .equation-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14pt; font-weight: 600;
+    color: white; letter-spacing: 0.05em; margin-bottom: 8px;
+  }
+  .equation-note {
+    font-size: 8pt; color: rgba(255,255,255,0.65); font-style: italic;
+  }
+  .eq-vars {
+    display: flex; gap: 18px; justify-content: center; margin-top: 12px; flex-wrap: wrap;
+  }
+  .eq-var { text-align: center; }
+  .eq-var-sym {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11pt; color: var(--sky); font-weight: 700; display: block;
+  }
+  .eq-var-name { font-size: 7.5pt; color: rgba(255,255,255,0.6); }
+
+  /* ─── LIMITATION CARDS ─── */
+  .lim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin: 12px 0; }
+  .lim-card {
+    border-radius: 8px; padding: 12px;
+    background: linear-gradient(135deg, #FEF3F2, #FDE8E6);
+    border: 1px solid #F5C6C2;
+  }
+  .lim-card.warn {
+    background: linear-gradient(135deg, #FFF8EE, #FDEBD6);
+    border-color: #F5D89B;
+  }
+  .lim-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+  .lim-icon { font-size: 14pt; }
+  .lim-title { font-size: 9pt; font-weight: 700; color: #9B2626; }
+  .lim-card.warn .lim-title { color: #8B5000; }
+  .lim-body { font-size: 8.5pt; color: var(--textmid); line-height: 1.5; }
+
+  /* ─── PILLARS ─── */
+  .pillar-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .pillar {
+    border-radius: 10px; padding: 14px;
+    text-align: center; position: relative;
+  }
+  .pillar.p1 { background: linear-gradient(135deg, #EEF4FF, #D6E8FB); border: 1px solid #B3CEED; }
+  .pillar.p2 { background: linear-gradient(135deg, #EAF5EE, #D0EDD8); border: 1px solid #A8D5B4; }
+  .pillar.p3 { background: linear-gradient(135deg, #F0EAFF, #E0D0FF); border: 1px solid #C4A8F0; }
+  .pillar-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14pt; font-weight: 700;
+    margin: 0 auto 8px;
+    font-family: 'Crimson Pro', serif;
+  }
+  .pillar.p1 .pillar-num { background: var(--navy); color: white; }
+  .pillar.p2 .pillar-num { background: var(--green); color: white; }
+  .pillar.p3 .pillar-num { background: var(--purple); color: white; }
+  .pillar-title { font-size: 9.5pt; font-weight: 700; margin-bottom: 5px; }
+  .pillar.p1 .pillar-title { color: var(--navy); }
+  .pillar.p2 .pillar-title { color: var(--green); }
+  .pillar.p3 .pillar-title { color: var(--purple); }
+  .pillar-desc { font-size: 8pt; color: var(--textmid); line-height: 1.5; }
+
+  /* ─── TABLES ─── */
+  .table-section { margin: 14px 0; }
+  .table-title-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 0;
+  }
+  .table-title-bar.tb-hydro   { background: linear-gradient(90deg, #0066B3, #1880C8); }
+  .table-title-bar.tb-geo     { background: linear-gradient(90deg, #C0392B, #D9534F); }
+  .table-title-bar.tb-clim    { background: linear-gradient(90deg, #D97E0A, #E8830A); }
+  .table-title-bar.tb-tech    { background: linear-gradient(90deg, #5B2D8E, #7B42C8); }
+  .table-title-bar.tb-multi   { background: linear-gradient(90deg, #1A7A4A, #25A066); }
+  .table-title-icon { font-size: 14pt; }
+  .table-title-text { color: white; font-size: 9.5pt; font-weight: 700; }
+  .table-ref-count {
+    margin-left: auto;
+    background: rgba(255,255,255,0.2);
+    color: white; font-size: 7.5pt;
+    padding: 2px 9px; border-radius: 10px;
+    font-weight: 600;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 7.8pt;
+    table-layout: auto;
+  }
+  thead tr th {
+    padding: 6px 8px; text-align: left;
+    font-weight: 700; font-size: 7.2pt;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    border-bottom: 1.5px solid;
+    white-space: nowrap;
+  }
+  .tb-hydro thead tr th { background: #EBF4FC; color: #0055A0; border-color: #B3CEED; }
+  .tb-geo   thead tr th { background: #FDF0EE; color: #9B2626; border-color: #F5C6C2; }
+  .tb-clim  thead tr th { background: #FFF6EA; color: #8B5000; border-color: #F5D89B; }
+  .tb-tech  thead tr th { background: #F3EEFF; color: #5B2D8E; border-color: #C4A8F0; }
+  .tb-multi thead tr th { background: #EAF5EE; color: #1A7A4A; border-color: #A8D5B4; }
+  tbody tr:nth-child(even) td { background: var(--gray1); }
+  tbody tr:hover td { background: var(--lightblue); transition: background 0.15s; }
+  tbody tr td {
+    padding: 5.5px 8px; vertical-align: top;
+    border-bottom: 1px solid var(--gray2);
+    color: var(--textmid); line-height: 1.45;
+  }
+  .ref-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.2pt; font-weight: 700;
+    white-space: nowrap;
+  }
+  .tb-hydro .ref-cell { color: var(--blue); }
+  .tb-geo   .ref-cell { color: var(--accent2); }
+  .tb-clim  .ref-cell { color: #D97E0A; }
+  .tb-tech  .ref-cell { color: var(--purple); }
+  .tb-multi .ref-cell { color: var(--green); }
+  .tag-chip {
+    display: inline-block;
+    font-size: 6.8pt; padding: 1.5px 6px; border-radius: 3px;
+    font-weight: 600; white-space: nowrap; margin: 1px 2px 1px 0;
+  }
+  .chip-us { background: #FDDEDE; color: #9B2626; }
+  .chip-st { background: #D6EFF9; color: #0055A0; }
+  .chip-lt { background: #D0EDD8; color: #1A7A4A; }
+  .chip-da { background: #EEE0FF; color: #5B2D8E; }
+  .chip-ai { background: #FFF0D6; color: #8B5000; }
+
+  /* ─── CALLOUT BOX ─── */
+  .callout {
+    border-radius: 8px; padding: 12px 16px; margin: 14px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .callout.info  { background: #EBF4FC; border-left: 4px solid #0066B3; }
+  .callout.warn  { background: #FFF8EE; border-left: 4px solid #E8830A; }
+  .callout.key   { background: #EAF5EE; border-left: 4px solid #1A7A4A; }
+  .callout-icon  { font-size: 16pt; flex-shrink: 0; margin-top: 1px; }
+  .callout-body  { font-size: 9pt; color: var(--textmid); line-height: 1.6; }
+  .callout-title { font-weight: 700; margin-bottom: 3px; }
+  .callout.info  .callout-title { color: #0055A0; }
+  .callout.warn  .callout-title { color: #8B5000; }
+  .callout.key   .callout-title { color: #1A7A4A; }
+
+  /* ─── PAGE FOOTER ─── */
+  .page-footer {
+    padding: 5mm 12mm;
+    border-top: 1px solid var(--gray2);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--offwhite);
+  }
+  .page-footer-text { font-size: 7.5pt; color: var(--gray3); }
+  .page-footer-dots { display: flex; gap: 4px; }
+  .page-footer-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gray2);
+  }
+  .page-footer-dot.active { background: var(--blue); }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--gray1); margin: 14px 0; }
+  .divider.strong { height: 2px; background: var(--gray2); }
+
+  /* ─── SYNTHESIS VECTOR ─── */
+  .vector-box {
+    background: linear-gradient(135deg, var(--navy) 0%, #0A3B78 100%);
+    border-radius: 10px; padding: 16px 20px; margin: 14px 0;
+  }
+  .vector-title { color: var(--sky); font-size: 8.5pt; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+  .vector-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11pt; color: white; line-height: 2;
+    text-align: center; margin-bottom: 10px;
+  }
+  .vector-explanation {
+    font-size: 8pt; color: rgba(255,255,255,0.65);
+    text-align: center; font-style: italic;
+  }
+
+  /* ─── CONTRIBUTION BOX ─── */
+  .contrib-list { list-style: none; margin: 10px 0; }
+  .contrib-list li {
+    padding: 7px 10px 7px 32px;
+    position: relative;
+    font-size: 9pt; color: var(--textmid); line-height: 1.5;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background: var(--offwhite);
+  }
+  .contrib-list li::before {
+    content: attr(data-icon);
+    position: absolute; left: 8px; top: 7px;
+    font-size: 12pt;
+  }
+
+  /* ─── PAGE BREAK ─── */
+  @media print {
+    .page { box-shadow: none; margin: 0; }
+    .page-break { page-break-before: always; }
+  }
+  .section-spacer { height: 18px; }
+  .subsection-title {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 10.5pt; font-weight: 700;
+    color: var(--navy); margin: 12px 0 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .subsection-title::before {
+    content:'';
+    display: inline-block;
+    width: 3px; height: 14px; border-radius: 2px;
+    background: var(--blue); flex-shrink: 0;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0; }
+
+
+  /* ============================================================
+     Screen-first responsiveness & ergonomics (non-print)
+     ============================================================ */
+
+  html { scroll-behavior: smooth; }
+
+  a { color: var(--blue); text-decoration-thickness: 1.5px; text-underline-offset: 2px; }
+  a:hover { color: #0A4FA3; }
+  a:focus-visible { outline: 3px solid rgba(232,131,10,0.55); outline-offset: 2px; border-radius: 4px; }
+
+  /* Sticky reading toolbar (hidden on print) */
+  .reading-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--gray2);
+  }
+  .reading-toolbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  .toolbar-left { display:flex; align-items:center; gap:10px; min-width: 0; }
+  .toolbar-title {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 10.5pt;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .toolbar-actions { display:flex; align-items:center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .btn {
+    appearance: none;
+    border: 1px solid var(--gray2);
+    background: #fff;
+    color: var(--text);
+    border-radius: 10px;
+    padding: 7px 10px;
+    font-size: 9pt;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .btn:hover { border-color: #AEBCCE; box-shadow: 0 2px 10px rgba(6,32,92,0.08); }
+  .btn.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .btn.primary:hover { filter: brightness(1.05); }
+
+  details.toc {
+    position: relative;
+  }
+  details.toc > summary {
+    list-style: none;
+  }
+  details.toc > summary::-webkit-details-marker { display: none; }
+  .toc-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: min(92vw, 420px);
+    background: #fff;
+    border: 1px solid var(--gray2);
+    box-shadow: 0 14px 40px rgba(6,32,92,0.18);
+    border-radius: 14px;
+    padding: 10px;
+  }
+  .toc-panel a {
+    display: block;
+    padding: 10px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .toc-panel a:hover { background: var(--gray1); }
+
+  /* Back-to-top (hidden on print) */
+  .back-to-top {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 998;
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid var(--gray2);
+    box-shadow: 0 10px 30px rgba(6,32,92,0.16);
+    border-radius: 999px;
+    padding: 10px 12px;
+    font-size: 9pt;
+    font-weight: 800;
+    color: var(--navy);
+  }
+  .back-to-top:hover { background: var(--offwhite); }
+
+  /* Reference list styling */
+  .ref-list {
+    margin: 12px 0 0;
+    padding-left: 22px;
+  }
+  .ref-item {
+    margin: 10px 0;
+    padding: 10px 12px;
+    background: var(--offwhite);
+    border: 1px solid var(--gray2);
+    border-radius: 12px;
+    color: var(--textmid);
+  }
+  .ref-item a {
+    word-break: break-word;
+  }
+
+  /* Make large tables scrollable on small screens */
+  .table-section {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-section table {
+    min-width: 820px;
+  }
+
+  /* Screen-only reading layout */
+  @media screen {
+    body {
+      background: radial-gradient(1100px 650px at 20% 0%, rgba(153,218,241,0.25), transparent 60%),
+                  radial-gradient(900px 600px at 85% 10%, rgba(232,131,10,0.08), transparent 55%),
+                  #E8EDF3;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 22px));
+      min-height: auto;
+      margin: 18px auto;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    /* Keep cover visually strong but not "paper" tall */
+    .cover { min-height: 720px; }
+
+    /* Better spacing on small screens */
+    .content-body { padding: 16px 16px 18px !important; }
+
+    /* Grids collapse gracefully */
+    .doctrine-grid { grid-template-columns: 1fr; }
+    .hazard-grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+
+    /* Reduce dense typography on mobile */
+    @media (max-width: 720px) {
+      body { font-size: 11.5pt; }
+      .cover-title { font-size: 24pt; }
+      .cover-subtitle { font-size: 14pt; }
+      .cover-stats { flex-wrap: wrap; gap: 10px; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .page-header-right { width: 100%; }
+      .toolbar-title { max-width: 52vw; }
+      .table-section table { min-width: 760px; }
+    }
+  }
+
+  /* ─── REFERENCE TOOLTIP STYLES ─── */
+  .ref-cell {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    padding: 4px 6px;
+    border-radius: 3px;
+  }
+  
+  .ref-cell:hover {
+    background-color: rgba(0, 102, 179, 0.15);
+    font-weight: 600;
+  }
+  
+  .ref-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #06205C, #0066B3);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 9pt;
+    font-weight: 400;
+    white-space: normal;
+    width: 300px;
+    max-width: 90vw;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(6, 32, 92, 0.3);
+    line-height: 1.5;
+    border: 1px solid rgba(153, 218, 241, 0.3);
+  }
+  
+  .ref-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #06205C;
+  }
+  
+  .ref-cell:hover .ref-tooltip {
+    display: block;
+    animation: tooltipFadeIn 0.3s ease;
+  }
+  
+  @keyframes tooltipFadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+  
+  .ref-tooltip-text {
+    font-size: 8.5pt;
+    line-height: 1.4;
+  }
+  
+  .ref-tooltip-link {
+    display: block;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 7.5pt;
+    color: #99DAF1;
+    text-decoration: none;
+    word-break: break-all;
+    cursor: pointer;
+  }
+  
+  .ref-tooltip-link:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+  }
+
+  /* Dark mode (optional toggle) */
+  body.dark {
+    background: #0B1220;
+    color: rgba(255,255,255,0.92);
+  }
+  body.dark .reading-toolbar { background: rgba(11,18,32,0.82); border-bottom-color: rgba(255,255,255,0.10); }
+  body.dark .toolbar-title { color: rgba(255,255,255,0.92); }
+  body.dark .btn { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); color: rgba(255,255,255,0.92); }
+  body.dark .btn.primary { background: #2B5BD7; border-color: #2B5BD7; }
+  body.dark .toc-panel { background: #0F1A2E; border-color: rgba(255,255,255,0.12); }
+  body.dark .toc-panel a { color: rgba(255,255,255,0.92); }
+  body.dark .toc-panel a:hover { background: rgba(255,255,255,0.06); }
+  body.dark .back-to-top { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); color: rgba(255,255,255,0.92); }
+
+  @media print {
+    .reading-toolbar, .back-to-top { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<a id="top"></a>
+<div aria-label="Document toolbar" class="reading-toolbar" role="navigation">
+<div class="reading-toolbar-inner">
+<div class="toolbar-left">
+<div class="toolbar-title">Digital Risk Twins — Systematic Review</div>
+</div>
+<div class="toolbar-actions">
+<details class="toc">
+<summary aria-label="Open table of contents" class="btn">Contents</summary>
+<div aria-label="Table of contents" class="toc-panel" role="menu">
+<a href="#section-1">Section 1 · Methodology &amp; Doctrinal Orientations</a>
+<a href="#section-2">Section 2 · Hazard Taxonomy</a>
+<a href="#section-3">Section 3 · Architectural Divide</a>
+<a href="#section-4">Section 4 · Probabilistic Gap</a>
+<a href="#section-5">Section 5 · Hybrid-Coupled Architecture</a>
+<a href="#tables">Tables · Architectural Synthesis</a>
+<a href="#complete-references">Complete References</a>
+</div>
+</details>
+<button aria-label="Toggle dark mode" class="btn" id="toggleTheme" type="button">Theme</button>
+<button aria-label="Print or save as PDF" class="btn primary" onclick="window.print()" type="button">Print / PDF</button>
+</div>
+</div>
+</div>
+<a aria-label="Back to top" class="back-to-top" href="#top">↑ Top</a>
+<script>
+          (function(){
+            const btn = document.getElementById('toggleTheme');
+            if(!btn) return;
+            // restore previous choice
+            try {
+              const saved = localStorage.getItem('drt_theme');
+              if(saved === 'dark') document.body.classList.add('dark');
+            } catch(e){}
+            btn.addEventListener('click', function(){
+              document.body.classList.toggle('dark');
+              try {
+                localStorage.setItem('drt_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+              } catch(e){}
+            });
+          })();
+        </script>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--                        COVER PAGE                          -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="page">
+<div class="cover">
+<div class="cover-grid"></div>
+<!-- Top header with logos -->
+<div class="cover-header">
+<div class="cover-logos">
+<img alt="Institutional Logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABsCAYAAAArDO8eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0NDYwLCAyMDIwLzA1LzEyLTE2OjA0OjE3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3YjkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzcyQkY4MDQ5NkU3MTFFQjlBNjdFNjMyOTIxODE3RTgiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ZTAyMmVjYjctZWQ4MS1iYjQ3LWI5NDctZjViNDk1OTEwYmY3IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjEtMDQtMzBUMTI6MTk6NTkrMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6YTVhOGUxYjYtMGY1Zi1hNzRlLWI3NjEtMjgwNjk2MjA1NzUxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOmI4Zjc2YzEyLTQ5MzgtYTg0NS05N2ZiLTgxZWU1OTJhYjdiOSIvPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDplMDIyZWNiNy1lZDgxLWJiNDctYjk0Ny1mNWI0OTU5MTBiZjciIHN0RXZ0OndoZW49IjIwMjEtMDYtMTVUMjA6NDE6NTUrMDE6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPHJkZjpCYWc+IDxyZGY6bGk+eG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3Yjk8L3JkZjpsaT4gPC9yZGY6QmFnPiA8L3Bob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6oCvGVAAAXbUlEQVR4nO2de5QcVZ3HP79b1d3TPZPJa/KYSSZECBJIDAlIElCXoCKCQCQEFBIlkBCIQIInysLicz3sURFF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" style="height:50px;filter:none;opacity:0.95;"/>
+<div class="cover-divider"></div>
+<img alt="UMA Logo" class="uma-logo" src="data:image/png;base64,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"/>
+</div>
+<div class="cover-badge">Systematic Literature Review · Post-2020</div>
+</div>
+<!-- Main body -->
+<div class="cover-body">
+<div class="cover-tag">📡 Digital Disaster Risk Science</div>
+<div class="cover-title">Digital Risk Twins for<br/>Disaster Management</div>
+<div class="cover-subtitle">A Systematic Review &amp; Architectural Synthesis of<br/>State-of-the-Art Frameworks (2020–2025)</div>
+<div class="cover-desc">
+      A rigorous synthesis of <strong style="color:var(--sky)">28 peer-reviewed studies</strong>, delineating three doctrinal orientations, 
+      a five-domain hazard taxonomy, and a new hybrid-coupled mathematical ontology 
+      for real-time cyber-physical synchronization in rapid-onset disaster scenarios.
+    </div>
+<div class="cover-stats">
+<div class="cover-stat">
+<span class="cover-stat-num">28</span>
+<span class="cover-stat-label">Studies Synthesized</span>
+</div>
+<div class="cover-stat">
+<span class="cover-stat-num">5</span>
+<span class="cover-stat-label">Hazard Domains</span>
+</div>
+<div class="cover-stat">
+<span class="cover-stat-num">3</span>
+<span class="cover-stat-label">DRT Doctrines</span>
+</div>
+<div class="cover-stat">
+<span class="cover-stat-num">2</span>
+<span class="cover-stat-label">Sync Paradigms</span>
+</div>
+</div>
+</div>
+<!-- Footer with keywords -->
+<div class="cover-footer">
+<div class="cover-meta">
+<strong>Research Domain:</strong> Disaster Risk Reduction · Digital Twins · Cyber-Physical Systems<br/>
+<strong>Methodology:</strong> Systematic Scoping Review · Semantic Framework Analysis<br/>
+<strong>Date:</strong> February 2026  |  <strong>Classification:</strong> Academic Research
+    </div>
+<div class="cover-kw">
+<span>Digital Twins</span><span>Data Assimilation</span><span>Bayesian Updating</span>
+<span>EnKF / 4D-Var</span><span>PINNs</span><span>Knightian Uncertainty</span>
+<span>Natech Cascades</span><span>Federated Twins</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--               PAGE 2: METHODOLOGY & DOCTRINES             -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="page" style="margin-top:4mm;">
+<!-- Page header -->
+<div class="page-header">
+<div class="page-header-left">
+<img alt="Logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABsCAYAAAArDO8eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0NDYwLCAyMDIwLzA1LzEyLTE2OjA0OjE3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3YjkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzcyQkY4MDQ5NkU3MTFFQjlBNjdFNjMyOTIxODE3RTgiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ZTAyMmVjYjctZWQ4MS1iYjQ3LWI5NDctZjViNDk1OTEwYmY3IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjEtMDQtMzBUMTI6MTk6NTkrMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6YTVhOGUxYjYtMGY1Zi1hNzRlLWI3NjEtMjgwNjk2MjA1NzUxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOmI4Zjc2YzEyLTQ5MzgtYTg0NS05N2ZiLTgxZWU1OTJhYjdiOSIvPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDplMDIyZWNiNy1lZDgxLWJiNDctYjk0Ny1mNWI0OTU5MTBiZjciIHN0RXZ0OndoZW49IjIwMjEtMDYtMTVUMjA6NDE6NTUrMDE6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPHJkZjpCYWc+IDxyZGY6bGk+eG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3Yjk8L3JkZjpsaT4gPC9yZGY6QmFnPiA8L3Bob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6oCvGVAAAXbUlEQVR4nO2de5QcVZ3HP79b1d3TPZPJa/KYSSZECBJIDAlIElCXoCKCQCQEFBIlkBCIQIInysLicz3sURFF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"/>
+<div class="page-header-title">Digital Risk Twins — Systematic Review</div>
+</div>
+<div class="page-header-right">Section 1 · Methodology &amp; Doctrinal Orientations</div>
+</div>
+<div class="content-body">
+<!-- Section 1 Header -->
+<div class="section-header" id="section-1">
+<div class="section-num">1</div>
+<div class="section-title-group">
+<div class="section-title">Methodology &amp; Doctrinal Orientations</div>
+<div class="section-subtitle">Semantic Synthesis · 28 Post-2020 Studies · Framework Categorization</div>
+</div>
+</div>
+<p>
+      This study synthesized <strong>28 state-of-the-art studies (post-2020)</strong> through a rigorous three-stage process: 
+      extracting semantic definitions of Digital Twins in disaster contexts, categorizing frameworks by hazard modality, 
+      and structurally evaluating their <em>synchronization algorithms</em>. This process revealed three distinct 
+      paradigmatic orientations—termed <strong>"doctrines"</strong>—within current literature.
+    </p>
+<div class="doctrine-grid">
+<div class="doctrine-card eng">
+<div class="doctrine-icon">🏗️</div>
+<div class="doctrine-name">Engineering Twins</div>
+<div class="doctrine-desc">Focused on structural fidelity and operational control of the built environment. Primarily leverages BIM integration, IoT sensor networks, and structural health monitoring.</div>
+<div class="doctrine-focus">Focus: Structural mechanics · Built infrastructure · Operational control</div>
+</div>
+<div class="doctrine-card env">
+<div class="doctrine-icon">🌍</div>
+<div class="doctrine-name">Environmental / Geophysical Twins</div>
+<div class="doctrine-desc">Focused on Earth system thermodynamics and boundary conditions. Employs numerical weather prediction, hydrodynamic models, and satellite telemetry assimilation.</div>
+<div class="doctrine-focus">Focus: Earth system dynamics · Boundary conditions · Thermodynamics</div>
+</div>
+<div class="doctrine-card risk">
+<div class="doctrine-icon">⚠️</div>
+<div class="doctrine-name">Risk-Oriented Twins</div>
+<div class="doctrine-desc">Focused on the socio-technical consequences of hazard events. Integrates vulnerability metrics, exposure dynamics, and systemic resilience quantification.</div>
+<div class="doctrine-focus">Focus: Socio-technical consequences · Vulnerability · Systemic risk</div>
+</div>
+</div>
+<div class="callout key">
+<div class="callout-icon">🎯</div>
+<div class="callout-body">
+<div class="callout-title">Central Argument: The True Differentiator of a Digital Risk Twin</div>
+        For rapid-onset disasters, the ultimate differentiator of a <em>true</em> Digital Risk Twin is the capacity for 
+        <strong>real-time state correction</strong> and <strong>continuous probabilistic updating</strong>—moving far beyond 
+        conventional Geographic Information Systems (GIS), which merely represent static spatial snapshots without 
+        dynamic physics-informed state evolution.
+      </div>
+</div>
+<!-- Section 2 Header -->
+<div class="section-spacer"></div>
+<div class="section-header" id="section-2">
+<div class="section-num">2</div>
+<div class="section-title-group">
+<div class="section-title">Deep Dive: Taxonomy by Hazard Modality</div>
+<div class="section-subtitle">Five Operational Domains · Physical Governing Equations · Computational Constraints</div>
+</div>
+</div>
+<p>
+      Digital Risk Twin (DRT) architectures are fundamentally constrained by the <em>physical nature of the hazard</em> 
+      they simulate. The governing physics dictates synchronization frequency, lead time, algorithmic choice, and the 
+      fundamental divide between continuous state-tracking and discrete scenario-inference.
+    </p>
+<div class="hazard-grid">
+<div class="hazard-card hydro">
+<div class="hazard-header">
+<div class="hazard-icon">🌊</div>
+<div class="hazard-title">Hydrological &amp; Hydrometeorological</div>
+<div class="hazard-badge badge-mature">MOST MATURE</div>
+</div>
+<div class="hazard-body">
+          Governed by <strong>fluid dynamics</strong> (Shallow Water Equations, Saint-Venant). The most mature domain 
+          for DRTs, relying heavily on <em>continuous state-space updating</em> via Data Assimilation. 
+          Satellite radar altimetry, SAR imagery, and IoT gauge networks feed Kalman / Particle Filters in near-real-time.
+        </div>
+<div class="hazard-pills">
+<span class="hazard-pill">Shallow Water Eq.</span>
+<span class="hazard-pill">State-Space DA</span>
+<span class="hazard-pill">EnKF / PF</span>
+<span class="hazard-pill">SAR Telemetry</span>
+<span class="hazard-pill">LISFLOOD-FP</span>
+</div>
+</div>
+<div class="hazard-card geo">
+<div class="hazard-header">
+<div class="hazard-icon">🌋</div>
+<div class="hazard-title">Geophysical</div>
+<div class="hazard-badge badge-fast">ULTRA-FAST ONSET</div>
+</div>
+<div class="hazard-body">
+          Defined by <strong>solid mechanics</strong>, non-linear seismic wave propagation, and 
+          <em>subsurface invisibility</em>. Solving complex PDEs during an event is computationally infeasible; 
+          these frameworks rely entirely on <em>discrete scenario-space inference</em>—matching real-time P-wave 
+          signatures to massive pre-computed scenario libraries.
+        </div>
+<div class="hazard-pills">
+<span class="hazard-pill">Solid Mechanics</span>
+<span class="hazard-pill">Scenario-Space Inference</span>
+<span class="hazard-pill">DAS Arrays</span>
+<span class="hazard-pill">PGA Metrics</span>
+<span class="hazard-pill">&lt;10s Lead Time</span>
+</div>
+</div>
+<div class="hazard-card clim">
+<div class="hazard-header">
+<div class="hazard-icon">🔥</div>
+<div class="hazard-title">Climatological</div>
+<div class="hazard-badge badge-slow">SLOW ONSET</div>
+</div>
+<div class="hazard-body">
+          Characterized by <strong>slow-onset thermodynamics</strong> and <em>state-dependency</em> 
+          (fuel dryness, soil moisture, urban heat island effect). The operational focus is on 
+          multi-phase spatial tracking, satellite-driven data assimilation, and 
+          logistics optimization for resource pre-positioning.
+        </div>
+<div class="hazard-pills">
+<span class="hazard-pill">Thermodynamics</span>
+<span class="hazard-pill">PINNs</span>
+<span class="hazard-pill">Satellite DA</span>
+<span class="hazard-pill">Multi-phase Tracking</span>
+<span class="hazard-pill">Equity-Weighted Risk</span>
+</div>
+</div>
+<div class="hazard-card tech">
+<div class="hazard-header">
+<div class="hazard-icon">⚡</div>
+<div class="hazard-title">Technological / Natech</div>
+<div class="hazard-badge badge-cascade">CASCADE RISK</div>
+</div>
+<div class="hazard-body">
+          Secondary disasters triggered by natural events (e.g., hurricane-induced power grid failure). 
+          The primary modeling challenge is the <strong>"Missing Data" Problem</strong>: 
+          the disaster destroys the very IoT sensors monitoring it, requiring 
+          Generative AI-driven imputation and network graph topology inference.
+        </div>
+<div class="hazard-pills">
+<span class="hazard-pill">Network Graphs</span>
+<span class="hazard-pill">Missing Data Problem</span>
+<span class="hazard-pill">Socio-Technical DT</span>
+<span class="hazard-pill">Gen-AI Imputation</span>
+<span class="hazard-pill">Smart Grid</span>
+</div>
+</div>
+</div>
+<!-- Multi-hazard as full width -->
+<div class="hazard-card multi" style="margin-top:0;">
+<div class="hazard-header">
+<div class="hazard-icon">🔗</div>
+<div class="hazard-title">Multi-Hazard &amp; Systemic Risk</div>
+<div class="hazard-badge badge-complex">FRONTIER DOMAIN</div>
+</div>
+<div class="hazard-body" style="font-size:8.5pt;">
+        The frontier of the field. Tackles <strong>compound events</strong> (e.g., earthquake triggering tsunami, triggering coastal surge, triggering infrastructure cascade) 
+        using architectures that must simultaneously assimilate physical hazard data alongside 
+        <em>social vulnerability metrics</em> and <em>supply chain disruption indicators</em>. 
+        The principal theoretical challenge is navigating deep <strong>Knightian uncertainty</strong>—unmeasurable risk arising 
+        from model boundary violations when multiple hazard physics interact non-linearly.
+      </div>
+<div class="hazard-pills">
+<span class="hazard-pill">Compound Events</span>
+<span class="hazard-pill">Knightian Uncertainty</span>
+<span class="hazard-pill">Social Vulnerability Assimilation</span>
+<span class="hazard-pill">VaR / CVaR Metrics</span>
+<span class="hazard-pill">Equity Analysis</span>
+<span class="hazard-pill">Delft3D-FM</span>
+</div>
+</div>
+</div>
+<div class="page-footer">
+<div class="page-footer-text">Digital Risk Twins: Systematic Review · Post-2020 Literature Synthesis</div>
+<div class="page-footer-dots">
+<div class="page-footer-dot active"></div><div class="page-footer-dot"></div>
+<div class="page-footer-dot"></div><div class="page-footer-dot"></div>
+</div>
+</div>
+</div>
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--             PAGE 3: ARCHITECTURAL DIVIDE                   -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="page" style="margin-top:4mm;">
+<div class="page-header">
+<div class="page-header-left">
+<img alt="Logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABsCAYAAAArDO8eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0NDYwLCAyMDIwLzA1LzEyLTE2OjA0OjE3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3YjkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzcyQkY4MDQ5NkU3MTFFQjlBNjdFNjMyOTIxODE3RTgiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ZTAyMmVjYjctZWQ4MS1iYjQ3LWI5NDctZjViNDk1OTEwYmY3IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjEtMDQtMzBUMTI6MTk6NTkrMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6YTVhOGUxYjYtMGY1Zi1hNzRlLWI3NjEtMjgwNjk2MjA1NzUxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOmI4Zjc2YzEyLTQ5MzgtYTg0NS05N2ZiLTgxZWU1OTJhYjdiOSIvPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDplMDIyZWNiNy1lZDgxLWJiNDctYjk0Ny1mNWI0OTU5MTBiZjciIHN0RXZ0OndoZW49IjIwMjEtMDYtMTVUMjA6NDE6NTUrMDE6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPHJkZjpCYWc+IDxyZGY6bGk+eG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3Yjk8L3JkZjpsaT4gPC9yZGY6QmFnPiA8L3Bob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6oCvGVAAAXbUlEQVR4nO2de5QcVZ3HP79b1d3TPZPJa/KYSSZECBJIDAlIElCXoCKCQCQEFBIlkBCIQIInysLicz3sURFFd1fB5SygwirBBZGHiIJBQCSAPFwMSMQk5B1iEmampx91f/tHVfX0zPS7e4Kew/ecPlNTdes+Pv27r9+9VS2bupIMpVzhrPZE08vAn3rSXiaZ8VCFnrRHeJzMePSk+x+DH6bv2BY575FMe+iA42QQRoElx07kXRNa2ZvM0DG8iZmdrY0pW0NiKa7jssrpyYyXAuYC5wPrhjjNAyY3lTVDFnnE0VXA8GTaPqfoNOBJ4JvA54HeIUv4AGnoyMHEjMeZWUtbT9rbmUxbkmlretLeZ5IZ7zl8S/yHlpu2QxOxY/RSoziqtCcz3g4AVf+aoocBjwP/DvwL0DM0uRhaDZXlJTwrF2YRPGhLpr3dYQeRzHjkWeGqZMZ7HnjfEOVjSOWmbeNNzxhZDIxyVVAkmrIkvazfOwbGl7NCYIqia/Gt8Gqgq+EZGiINRW8rqqwCyKCIABHHJpMZNCCmeYGDUwKsVPR04ALgkSHIV8PlZlUaHecHUY4w4lMxCm7EccJxmeaZXAGIkxV9GPgucCXwZqMz10i5KU/Lh6pCUeNbnacgIgSNwuhkxtunyvAwXCGIeac+pehpwDLglw3NYAPV6Gp7aNpyihjfmkUtLgIwpift7QQfXh6kUlW5E3gQuAlYDexvcF7rlpv2GtdhOIaVBkQ9EDEoQhoQI23JtLcbOLQApHJVeZnCScAK4L6GZbYBaqTltXqWJVaCNlQVI+qPhaxpT2bs9jJVtVRV7gTuBW4FLgf2NjDfNctN2sa0eY6RpUALqkSDc56CFQHVtp60tysMW6Kqlrt+HnAicDHw84ZkvA41yvKMtfYyCawuhd9ZAAQwxybT3gYYCKQ4xBJVuQO4B7gdWAm80aAyVC23QZ3taSDvQEHEn7aIWvJgjktmvB39rCv8W3tVPhf4AL4V3t2QUlQpN9WAaisil7uAoKiCigBCHsy2oLcF8ue4fSoPMbym+efGAXcBa4BLgF0cQDWi2s5Q1XnZEBiA+hHnwRyT8vQNa7WvqhawQv98qaqcf08/iGcBJwCfwgd5QOQms/VF4BhZBeAAjukrUD5MV5ExI+Op17b5E4Z+VlZhVc4PWwiiKm3AHcBPgUuB7bWXqjLVa3ljPKuLjEAWyHp9HUU+zAwwbuwweWnj3uJVtXFV+Ux8K1wJ3FZ70crLTdbhVYkaLgJi/lTMYJRgfDcY5thRzdFwzQKKVNXGVeVRqvwIOAt/cL2t5kKWUD2WF/UsK0R8l6CoF3QU4by2P0yMjO7xZxltZatq46ryfGAefm98NH6FeBl/vFj3dM+1WrM/dKHidaBeYF2CE0CDgjDbkmm7W9G2MIKyVbXg9bxjCljsgKr8vimjhu/Ynzrv4tseB2Dq+JbDf3LhUQ/OmNh6bI3lzslNWa+mGx0jlzuEDgCD4JEFSsAcH8wypsKgdsr/mxd/+aocnitisf6x98HDx6QW//cfEuH59du7+PX63VNmTGztALZWXfA81Vptj/WsHuMBvt/OImJwgov5MHNOKWTMwLUMKGI94d+yVblfPL3A88BzVnk+lbH7u9PZZteRL3tWE+QpmbEGiFVf7P5ye2sYJBvRVWFH4NqgU1ClIEwFwSB4Y5IZb3sFvWXfce7coOv7Ff4APKvwUjpju9KeHQHMAI4CFhEYxv0v7nTPP66Tm5/YDMCYYVFOOmLMNuC1qgs+QLVY3kSrcqY/ewhcTnlTsRIwx/ekvRfCSCoY+Abn2EkISvUlz2qvVcbjg3ofsBxyRj9INz+xOXvlh6dw29JZZESSbSMTXUd0tJyczFTXXMUjg5OQL7xQ3bzaRf5NRK6SoKCu6XPjhwCFPJgKcdcwNULPrj3dPd0pr+2Rl3fzgydf7wcu0CbgGeA5YD3+ELET35qOBN5J7St+35NTjzxF/WHLCdXerKd1DjpXreXFs+hFjtUcnLTnH/swFdcImpvX+pZ5dFRZfMPTiU17kgmAq06ewpmz2rfd+ey2tcCzwJ8BCxyCD+rs4LhxOnjMCwqfBibiW2ptPWWe3C6v8gWguGExMMoDBMFgcQb0lANhjo45PPHybjbt6dtQ9LVfbOCuFe9O3fnsNsVfLZtcb0HKaDdHdBwUHDcD04AXSoSvSNVYniQtK434zk5VRUX8ry+wskIwrUK6QKe0uys9CRhfV+4r188xsjCvB5pLA+AZVd/TUcHn/ao63bPQq0KvCkkLqeC6tRZPhTRCSiGNkEXZ3Zvlg4e37RrX2jcyWPWBd6Se27zvyXozX7EmjXoKkemEvgqROYhQ1aeA3B0VTm2bRS8P2zmjljh9s4fenNfY713zLTMLX1+yoefQa84/+owR6czOnt7M2Kf+ujd2w9qNrwl6rSJfAg6rh00Z7WPmpAk556Kf0WOLAalGlVbbKVb1I/481a+qXfR1GsVgWuVz12/uOgI4Y9mGLMDKpgdfvFWVmGNkkWOcjwCfS2W8ZkSuBOJ1l2iw7scxC3zHYlBvRaYCrdQ5v3W7KhgktwiXJcOvSgER4lhKwYyqfO47W7rnAKflRdXhGHmdvp50BPAfruM+mfH0nHTWLgNOradAg9Q+/LcI5wMghgCiAHOAh+qJupIxU2uXcoGnkmv/UCWpQlKFbhWsKlYVz1pUlbRldQFwAO2ukS2uEQZ85sYj5r7WJnejERYDG+spVJ66mT15XNDOkWvzjKm+3SsgtytbutFLwAUi0tITdFXi+GO4eDBUQZVkXuQZ5fI123pOAk72b8hLWOh0jRk0GQ9mFg6wekQi8rpVXb23JzsNf402OjB8FXqgOeKe3h0Mm/roAQ3YXFnO8kwPXNatSg/BOmzWop7S41m6POhG6FLwVGza6mVrtifnI3Kyv/KT/20LiHS4jmx2HcExfR/XmPzPxKjj/GTssNhR8YgzH3i41sI5Y4c9ipG5zQjNYoK8aF+Pa4I8VvIpBCdtocTntKzKwVYtnvXoxYdYAKbdl/WW3bmrdwHCCXmwguUzg//Na7tjZItjBNcp+zl1RMK9r314bK2g5wM7qmTXO+K9hwyPiwpGwQgDILYBU2r9YgDcPVq82jbDKvJ8clEFI4LBA4Ve/7xNe/bix/ZlliPiVwURCOMVITdMEOl0jZT1oeXmvCIJ4GsTRyb+mPbs8h37Uyfiu9WLOgLy9JBEnVNAgi5cSRoFDM3Wz1c3Oht4tYK4CqpUtX1XVjkhq76FeQoptSStR48aetSQtmS6PRY9tj+7DHRu4H8iB8uYAdWWpuzI5n0FOoz+1XiwFU5PRJ0H39GWGNEUMScDT5UrWHR088Mx5PjcIp4IcRHiouRZ4rHNBBZZ5lNIbneRLQMxkVVIONfyQISY9hE32Mw+qxe82O19Gpjd1yvlxlJBTJLXRitdHcO9luDBmQJelZJSWDZxZPyjwGdf3dF1KyJfAUaF12dMbJXJo+Py9MZ9GWfeoU2ImhgGBdIS5qyfJc6J1zFYLjZIbkupLkopxPJmD3kwkyllyYYe+3mE6X6eCsNChGYNrwva1trkvLoj7Poq0gDIbcDNU9uHrX2zN3vmlr29n3SMLPneue+KbdjVLa/s7JavnH6Ybh2RWPHDNzKkVLEoRSDOBJqo8ZkQt7tAkxeD5SLSBJBUiwn3nPgwkymrizem7Jd9cKVhAeAIBO74mGPGukZ2AuNKZawfsMKYjx+ZiDw6MhG59upTDr3px+u2Xvqz57cLwF1/2B67aelR7xwfc9nu7zoqBjECMgv4XVlSBVTI8iIp9BI0nDEI0dA7DPv3evbCnVm9BmFqJbDiuaqcq9btrjGvUwBevie5EqkSAf7FMZK898Ud/RDf9+xWpr33EHanU8EZKQZxLrXCK7DovTAu0uFnzoeTQkF1f0ZZvM/TbzXDIVXA8rMeWG9UpdN1ZAv+Oiq5dMICVqCBiLfs7Y1PHd/C/23t2/99+MThvJqGGEJKwCUvjf4Qax4sD+owmsWsSpo8GP7pfZ5yXtbyrWbkkCph9XPPGyMdrpGt/VMtD01L9C4P/HEHX1swlX/+3/Ws397F/JnjOXLqWH61I40rYDBYbDGIc2I1dhoDq+3cbnROs9fnvknCbowsAXsjhgk1wMqFifnjwnbHyO8ryVz/dq94AbtTlu/+ZiOXzJu8/4jJIzY92mWn37irl4RAFkOacIRQEOJB+E7ZqjcGuf08+UZWodAtYc51d5ORJS3CjSATaoTlJyTh/JJO18iWUpmqcgSDqtKVyvLjdVtuGh5rnuwp08FgBFwsLmUhzqWGDZL5ljcBZSFo6HbaknDMioTDjcCEOmAFY0T/HiNmrBN1dsiAXfg1jPnyFMSdiN4rjtzveEozEvgWTVDQkhDnUBO80J8nXIKqG1SPLc2uXJRw5Zao0lYnLN/7IrlpnqFtWNLdtb8GCyt5eXPbUQeNVrSp2/HTrgLiXEOFLvU8hZYXB1nu55C/DI86K4e5cotg2xoAiyimb04MMH64cd6o/MmoCjvjuzGyUBRa8KtyFRCPUa1+OTJsNxeBjgY2tDU5n252uQ10eKNgGQm9KgYRIdbkjHCN6cIvZ0FVO+YzEffuZtGfWZQkBqEqiM1ZTNXLkW7wta5CeWV8wv1Ma8T8CGhtKCwFk+emR2gPxnr9Fn60gmlFv/B9h9vGHT2pxYq0GKAZfwxXJcSqlyNd4P0Ak1rc1S2u3AbaOgSwEMe/N/BAd1ojm4HDqh3vQcEx3z1xkbMAkgIWoQaIc4DvV8gNCOAdNMz94ijH3AHEhwgW5K4rIB1OBX69/sDy/hkw5jOuuUtE/gcgHoSrFmJCqXqzoztjeOzXMaP3AfEhhEVuxQ0wIu0pI8+Uy1yFrd7uzlmdDuhIgN7AequFKMiowtEXl9vkyJ+jyH4jEh9CWLnzQRydriN3F8pQteM94B7XsMBiUFWaAuTVQGz2Ez2/2oRd4PWo4UzQR8BEhggWBs0tjAMd3QNmGbWO+cTIT13kFlCyolipAaKY69TaB6rMQm6c93gCLhWRG/0cNRxWrv30w2trLBHdk+3NVJXZAp3x3kkzJnhWGKMIrkINENc1o1fhVO8cyJ+efV8cmRlHVgwBLKL95sSCGdOqyS17ymawjEXe67jO6SagmrVQJcT9SeEcT6nuWwzkTon1WwO6HHQayD81GlZ4HG5Diw2PRzPbTZYiSwGlXFB9acoaI3qDoigGN8hCFRCXo7qhbEJFNDDj6bjo2UbkKdBJjYSVb8ViBEHHu0a24+/UBApP9kvozY6p47sM0q5AVnyE5SB6QbxN6E29Kj8pS6iECn3rO0RkgUF/G0dyu5YaAMtPMLf67nuUVfvgVaI8i7y/KeKcmlWLRYgEqZWD6Apk0Zc8ZFVcIF7HS42KrZ49kxCzjODBtwbB6ufKAjockc347qCy6rPKnEXeadBvusEOgCog9rrKx7wGvL+q1P6825tEZ4rIZxsEKzcxcH2fYLvrlJ5llGj2khOmjNuhIp1hZ1EFxMvTHn8slW6lcg+Oldq5IFcZ7AxHOalaWH3hc7BysRr/ib5Ot8Aso8Lx3gORqHzEah+wCiGusRoMxxqgcjtDPRc5R4w8JegUqAIWg2DR94iVIJgO1zGbwjCV9K55WiNirgkdmC4VQfyrwoUIxFxhWDWpFVEl22r/FjHMB/m9iLRAf1h+T1YRLIK988G9tt2RvAfnKljBCvCmx0wavdGFgy0GK1AOoidkVe05nrKvgvJWrEr3JL/kGBaB/szV/j0vEj4iVRYWDpK7V/AiiRGJdPrN0jsdCljkL+OxyCke/vDJAOUgGrg67b9ys6Gq5jmMeyLIFxG+HL6hrEpYufN+GIfmEc2e7U4NSggK9q6h7nCMXu0AnvVTLAVRsb/04NqYSMNfteiOi1UV41ccmAXy0Vpghe9vyDWbrmlzHdlDsNOpgmYv29beul5EDgP/HQZlIG5H+IRnq/Y75HTZhy4BYPlrPxx0rdpnz9SgnxCRJ8FOqxqWkOtkghc4dPaIbCXcJla+2ft1Uzz6YfCrcyaMqzBEtZhPeNidJeIrqhBaKdXyyGiXK2a+4K0TkZFVwqL/ormEaxnTyyUaWOUaR1gZpJh7WKYIxK+i+qsaylcROKj9Se8NxjgfM8ovIFjKhUpg5RINxokdrr+WUVAD6podMablOSPM8Ktm7msrBPEJB75AsExcqRbNW1FxWKjv7RYPGeEKEfkGVAwrb7AsiNDpOtJvi2yJdu83w+LRE9PBP33tWx/EiH/z3ozIOapa8et2qoUWyl19UmETve7B/6zk/uuiRmcCiyuEhQmuBefbw+cyckOS4u3eGhG5IBqES+d5e3IQRVDlApRNRWPJU63QQhW1vNUnXcLta2+oJI7lLkwV9N1QFpZ/pW+c2OEY2RSGLyFtHR5f54p+LxuEKwLxuxnlrnIZrhdaqJLV9tzjLwYoBzFphAUg60QYVwZWv8d5RGRMJuLstiVevRnsHHg8MazpeLVKREDVUgDi88DqqBOmUfjLOP09F5UqS1WqqM2rAOLmiGEh/tM6kRKwcsf+KzGVlmFNXs+b/X9Won+7JwB3RNCzs8b3jmDNQIjdUdWPp0tszG4ktFBVdRhlID4mIpdGIee1KASrD6zvnYkmnKZ0d28KiBXb0NPcEvudiHw75xEeDPGyjLK+UKaGAlqomnrbEhC/LyKzgIuLwfKPwlcAK0Cn4y9DHlwkud8PGxab46kKAlbz3Oo+xNvU4+aBNw0ltFB1vQLu3OMv5uEn/2vg6VXANJD3FYE10KXfHjxSVQzeGhEWODlzVGzYqyuvgq7AMeS7Jd87+8J6ilWx6n5z4/vn+hnNg5g2Rs9ykXWgnTB4/YNgeBEMbzpcR14vFLcqxJoij7rI17OBM8JBcAQ81bRFPq6quY1+BwpaqIa9J3kAxB0icgbwmBFtGgAL6Oe+6wyeywAGuKCEZ4e1RI9UMG6waysP4hVWeQYOPLRQDXbS+BDnzV4O8EzEsNQRwRHBGH/cJwIREVz8T0Sk3TGyte+hPZP/WePAQhf/hdUihPfdK8J3os5bBw6GAF6o9xyzjNlHL7tdhG8MgOX3vKI4RnHRjiKPztMUcx4W4QMiggPhfVvEf2eAHnPUsqHKfkUqVG1r9n0V0KyIyJWCzli67NoPPf3My4XCHAoUW3wu9LzGBGAxcH3w/5eAL9aZz1BrgXnB8Tz6/y7HoFH3kFlenjwHPp7JZIb2B9beAg05vJmzlgL87dUNWxuyVvr3pELV9oQGxv8qwPRZyyBvhX7B/ONYeMZ7co/vPvLoC1fMPfrwq1zXGQmQSmc2/+mVjbfMfvehnwfIZuz+JSu+/bds1juoTHrP478Ro1btrSZwIXi/qSPxijRpwmiOO+adgD98OW7OYbsyvfY1YGQQ5NZTTjxyGkDWf5fLudmsdw1QDt5eDkD+Qx2INm+Qdu3evz5iDBHjz02jRjpcY7aGrweJOOYBI3zYCLgi3+Lv7EdEQhWyvFsaGP8XYLBj8q6fP3nXN/71k6cD04L3KXe6htcBFP1LImbaPSVhhWcNeuXkaRWP5aZSX/7XA1+tNHAheOfVkfhAXU8BeD3JVNpB5jvCOmAkQrtjJPgBTblTxCx0sF0OnJ2G9MD7S2gc9eV/LVXAe0uqbaANIuZjIsaKmA7Xka2uI0RcudcxnCJiLgJq3rV5IFTI8m5tYPxFNx2PnXoBe1655SHHcIWIfEaULcBmN2JGquqdoLcDtE9dWi6N56gvz7OBw2u5sRC8JXVkpBZdF4EZ4rul7ozA4QorI45Q2Yt7uJv6fonlehoI74Ap4eZajaWuQ4v6izd/ArrfulxVrkLw5jUw/qcp8cOXTQd/kt6//AD8X4DYC/w2/3r8kIra/snU97bbqvZE56sQvEcKnKtVs/DbpKHUEhrnGKhKb2VvC/jWV0gVWt1bqrcc3j+ypMq9wG8rT29bXh16G14dehteHXobXh36f+Cihfz1AJhLAAAAAElFTkSuQmCC"/>
+<div class="page-header-title">Digital Risk Twins — Systematic Review</div>
+</div>
+<div class="page-header-right">Section 3 · The Architectural Divide</div>
+</div>
+<div class="content-body">
+<div class="section-header" id="section-3">
+<div class="section-num">3</div>
+<div class="section-title-group">
+<div class="section-title">The Architectural Divide: State-Space vs. Scenario-Space</div>
+<div class="section-subtitle">Two Computational Paradigms for Cyber-Physical Synchronization</div>
+</div>
+</div>
+<p>
+      A major contribution of this paper is the rigorous delineation of the <strong>two mutually exclusive computational paradigms</strong> 
+      used for cyber-physical synchronization in Digital Risk Twins. The choice of paradigm is not arbitrary—it is 
+      <em>deterministically dictated by the physical time-scale of the governing hazard dynamics</em>.
+    </p>
+<div class="arch-grid">
+<!-- State Space -->
+<div class="arch-box state">
+<div class="arch-head">
+<div class="arch-head-icon">📡</div>
+<div class="arch-head-text">
+<div class="arch-head-title">Continuous State-Space Filtering</div>
+<div class="arch-head-sub">Data Assimilation (DA) Paradigm</div>
+</div>
+</div>
+<div class="arch-body">
+<div class="arch-row">
+<span class="arch-label">Mechanism</span>
+<span class="arch-value">Fuses real-time observational telemetry (satellites, UAVs, gauges) with physics-based numerical models to <strong>continuously correct</strong> the evolving hazard state vector.</span>
+</div>
+<div class="arch-row">
+<span class="arch-label">Algorithms</span>
+<div>
+<div class="algo-tags">
+<span class="algo-tag">EnKF</span>
+<span class="algo-tag">Particle Filter</span>
+<span class="algo-tag">4D-Var</span>
+<span class="algo-tag">3D-Var</span>
+<span class="algo-tag">UKF</span>
+</div>
+</div>
+</div>
+<div class="arch-row">
+<span class="arch-label">Use Case</span>
+<span class="arch-value">Fluid-driven hazards (floods, weather). Short-term (minutes to hours) or seasonal forecasting. Natively produces <strong>probabilistic ensemble distributions</strong>.</span>
+</div>
+<div class="arch-row">
+<span class="arch-label">Lead Time</span>
+<span class="arch-value"><span class="tag-chip chip-st">Minutes to Hours</span> <span class="tag-chip chip-lt">Seasonal</span></span>
+</div>
+<div class="arch-row">
+<span class="arch-label">Output</span>
+<span class="arch-value">Posterior state distribution p(x_t | y_{1:t}) with quantified uncertainty covariance Σ_t</span>
+</div>
+</div>
+</div>
+<!-- Scenario Space -->
+<div class="arch-box scenario">
+<div class="arch-head">
+<div class="arch-head-icon">🗄️</div>
+<div class="arch-head-text">
+<div class="arch-head-title">Discrete Scenario-Space Inference</div>
+<div class="arch-head-sub">Bayesian Updating Paradigm</div>
+</div>
+</div>
+<div class="arch-body">
+<div class="arch-row">
+<span class="arch-label">Mechanism</span>
+<span class="arch-value">Uses real-time telemetry as <strong>"evidence"</strong> to continuously update posterior probabilities of an unfolding event against a massive surrogate database of pre-computed high-fidelity physics scenarios or AI emulators.</span>
+</div>
+<div class="arch-row">
+<span class="arch-label">Algorithms</span>
+<div>
+<div class="algo-tags">
+<span class="algo-tag">Bayesian Nets</span>
+<span class="algo-tag">MCMC</span>
+<span class="algo-tag">Surrogate DB</span>
+<span class="algo-tag">P-wave Matching</span>
+</div>
+</div>
+</div>
+<div class="arch-row">
+<span class="arch-label">Use Case</span>
+<span class="arch-value">Hazards with <strong>extreme wave propagation speeds</strong> (earthquakes, tsunamis). Requires ultra-short lead times. Instantaneous life-safety alerts &amp; automated parametric triggers.</span>
+</div>
+<div class="arch-row">
+<span class="arch-label">Lead Time</span>
+<span class="arch-value"><span class="tag-chip chip-us">Seconds (&lt;10s)</span> <span class="tag-chip chip-us">Minutes (&lt;10 min)</span></span>
+</div>
+<div class="arch-row">
+<span class="arch-label">Output</span>
+<span class="arch-value">Updated posterior P(scenario_k | evidence_t) triggering automated railway shutdowns, evacuation routing</span>
+</div>
+</div>
+</div>
+</div>
+<div class="callout info">
+<div class="callout-icon">💡</div>
+<div class="callout-body">
+<div class="callout-title">Why This Divide Is Fundamental, Not Incidental</div>
+        State-space filtering requires solving differential equations at each assimilation step—feasible over minutes to hours for fluid dynamics.
+        Scenario-space inference pre-computes the expensive physics, reducing the real-time operation to a probabilistic database lookup—
+        essential when a P-wave arrives and a destructive S-wave follows in <strong>less than 10 seconds</strong>.
+        The paradigm is physically forced by the governing wave speed.
+      </div>
+</div>
+<!-- Section 4 -->
+<div class="section-spacer"></div>
+<div class="section-header" id="section-4">
+<div class="section-num">4</div>
+<div class="section-title-group">
+<div class="section-title">The Probabilistic Gap &amp; Mathematical Limitations</div>
+<div class="section-subtitle">Social-Physical Coupling Failure · Validation Deficits · AI Generalization Barriers</div>
+</div>
+</div>
+<p>The fundamental equation of disaster risk established in this review decomposes the systemic risk state into three coupled components:</p>
+<div class="equation-box">
+<div class="equation-label">⚙️ Fundamental Equation of Disaster Risk</div>
+<div class="equation-formula">R(t) = f [ H_t, E_t, V_t ]</div>
+<div class="equation-note">where risk R at time t is a function of the hazard state, exposure, and systemic vulnerability</div>
+<div class="eq-vars">
+<div class="eq-var">
+<span class="eq-var-sym">H_t</span>
+<span class="eq-var-name">Hazard State<br/><em style="font-size:6.5pt;color:rgba(255,255,255,0.45)">Dynamic DA — Highly Active</em></span>
+</div>
+<div class="eq-var" style="color:rgba(255,200,100,0.9)">
+<span class="eq-var-sym" style="color:#FFC864;">E_t</span>
+<span class="eq-var-name" style="color:rgba(255,200,100,0.7)">Exposure Layer<br/><em style="font-size:6.5pt;color:rgba(255,200,100,0.4)">⚠ Usually STATIC</em></span>
+</div>
+<div class="eq-var" style="color:rgba(255,140,100,0.9)">
+<span class="eq-var-sym" style="color:#FF8C64;">V_t</span>
+<span class="eq-var-name" style="color:rgba(255,160,100,0.7)">Vulnerability Layer<br/><em style="font-size:6.5pt;color:rgba(255,140,100,0.4)">⚠ Usually STATIC</em></span>
+</div>
+</div>
+</div>
+<div class="callout warn">
+<div class="callout-icon">⚠️</div>
+<div class="callout-body">
+<div class="callout-title">The Critical Flaw: Social-Physical Coupling Failure</div>
+        While the hazard layer H_t undergoes highly dynamic data assimilation, the <strong>exposure (E_t)</strong> and 
+        <strong>systemic vulnerability (V_t)</strong> layers—representing real-time population mobility, census-derived 
+        fragility functions, and infrastructure interdependencies—are mathematically complex to integrate and are 
+        almost universally treated as <em>static boundary layers</em>. This is a fundamental architectural flaw 
+        that prevents current "Digital Twins" from producing truly dynamic risk estimates.
+      </div>
+</div>
+<div class="lim-grid">
+<div class="lim-card">
+<div class="lim-head">
+<div class="lim-icon">🔬</div>
+<div class="lim-title">Validation Constraints</div>
+</div>
+<div class="lim-body">A distinct lack of <strong>forensic post-disaster analysis</strong> comparing twin predictions against real outcomes. Without retroactive validation against actual disaster observations, the quantified uncertainty of DRT outputs remains fundamentally unverified, undermining operational trust.</div>
+</div>
+<div class="lim-card warn">
+<div class="lim-head">
+<div class="lim-icon">🤖</div>
+<div class="lim-title">AI Generalization Barriers</div>
+</div>
+<div class="lim-body"><strong>Physics-Informed Neural Networks (PINNs)</strong> severely struggle to generalize across diverse infrastructure typologies without highly resource-intensive domain-specific calibration. Transfer learning across geography or infrastructure class remains an unsolved challenge in operational DRT deployment.</div>
+</div>
+</div>
+</div>
+<div class="page-footer">
+<div class="page-footer-text">Digital Risk Twins: Systematic Review · Post-2020 Literature Synthesis</div>
+<div class="page-footer-dots">
+<div class="page-footer-dot"></div><div class="page-footer-dot active"></div>
+<div class="page-footer-dot"></div><div class="page-footer-dot"></div>
+</div>
+</div>
+</div>
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--             PAGE 4: PROPOSED ARCHITECTURE & PILLARS        -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="page" style="margin-top:4mm;">
+<div class="page-header">
+<div class="page-header-left">
+<img alt="Logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABsCAYAAAArDO8eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0NDYwLCAyMDIwLzA1LzEyLTE2OjA0OjE3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3YjkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzcyQkY4MDQ5NkU3MTFFQjlBNjdFNjMyOTIxODE3RTgiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ZTAyMmVjYjctZWQ4MS1iYjQ3LWI5NDctZjViNDk1OTEwYmY3IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjEtMDQtMzBUMTI6MTk6NTkrMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDIxLTA2LTE1VDIwOjQxOjU1KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6YTVhOGUxYjYtMGY1Zi1hNzRlLWI3NjEtMjgwNjk2MjA1NzUxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOmI4Zjc2YzEyLTQ5MzgtYTg0NS05N2ZiLTgxZWU1OTJhYjdiOSIvPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDplMDIyZWNiNy1lZDgxLWJiNDctYjk0Ny1mNWI0OTU5MTBiZjciIHN0RXZ0OndoZW49IjIwMjEtMDYtMTVUMjA6NDE6NTUrMDE6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4yIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPHJkZjpCYWc+IDxyZGY6bGk+eG1wLmRpZDpiOGY3NmMxMi00OTM4LWE4NDUtOTdmYi04MWVlNTkyYWI3Yjk8L3JkZjpsaT4gPC9yZGY6QmFnPiA8L3Bob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6oCvGVAAAXbUlEQVR4nO2de5QcVZ3HP79b1d3TPZPJa/KYSSZECBJIDAlIElCXoCKCQCQEFBIlkBCIQIInysLicz3sURFF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"/>
+<div class="page-header-title">Digital Risk Twins — Systematic Review</div>
+</div>
+<div class="page-header-right">Section 5 · Proposed Hybrid-Coupled Architecture</div>
+</div>
+<div class="content-body">
+<div class="section-header" id="section-5">
+<div class="section-num">5</div>
+<div class="section-title-group">
+<div class="section-title">The Foundational Hybrid-Coupled Architecture</div>
+<div class="section-subtitle">New Mathematical Ontology · Three Core Pillars · Self-Healing Mechanisms</div>
+</div>
+</div>
+<p>
+      To resolve the identified limitations, this study proposes a new <strong>mathematical ontology</strong> in which the global system state 
+      is a <em>synchronously coupled vector</em> integrating all three risk dimensions simultaneously. 
+      This moves DRT architecture from a sequential pipeline model to a fully-coupled tensor formulation.
+    </p>
+<div class="vector-box">
+<div class="vector-title">🔢 Proposed Global System State Vector</div>
+<div class="vector-formula">
+        Ω(t) = [ H_t ⊗ E_t ⊗ V_t ] · Σ_t<sup>-1</sup>
+</div>
+<div class="vector-explanation">
+        Global state Ω(t) is the Kronecker-coupled product of hazard, exposure, and vulnerability tensors,<br/>
+        normalized by the inverse system covariance matrix Σ_t for uncertainty quantification.
+      </div>
+</div>
+<div class="subsection-title">Three Core Architectural Pillars</div>
+<p>To process this coupled state vector operationally, future DRTs must implement the following three non-negotiable architectural pillars:</p>
+<div class="pillar-grid">
+<div class="pillar p1">
+<div class="pillar-num">I</div>
+<div class="pillar-title">Federated Twins</div>
+<div class="pillar-desc">
+          Municipal vulnerability twins (V_t) must <strong>automatically feed into</strong> national hazard twins (H_t) 
+          via a standardized semantic ontology. This vertical federation enables cross-scale risk propagation 
+          and eliminates the static boundary layer problem at organizational interfaces.
+        </div>
+</div>
+<div class="pillar p2">
+<div class="pillar-num">II</div>
+<div class="pillar-title">Self-Healing Mechanisms</div>
+<div class="pillar-desc">
+          To counter the "Missing Data" problem during sensor blackouts, the covariance update (Σ_t) must employ 
+          <strong>Generative AI and historical interpolation</strong> to artificially fill telemetry gaps—maintaining 
+          state estimation fidelity precisely when it is most critical: during active disaster impact.
+        </div>
+</div>
+<div class="pillar p3">
+<div class="pillar-num">III</div>
+<div class="pillar-title">Cognitive Interfaces</div>
+<div class="pillar-desc">
+          The system must assimilate <strong>live human telemetry</strong> (operator stress indicators, biometric data) 
+          to adapt information presentation to operator cognitive load, while continuously evaluating 
+          <em>equity-weighted risk</em> and business continuity metrics.
+        </div>
+</div>
+</div>
+<div class="divider strong"></div>
+<!-- TABLES SECTION -->
+<div class="section-header" id="tables" style="margin-top:14px;">
+<div class="section-num" style="font-size:13pt;width:30px;height:30px;">T</div>
+<div class="section-title-group">
+<div class="section-title">Exhaustive Architectural Synthesis Tables</div>
+<div class="section-subtitle">All Five Hazard Domain Tables · 28 Referenced Studies</div>
+</div>
+</div>
+<!-- TABLE 1: HYDROLOGICAL -->
+<div class="table-section">
+<div class="table-title-bar tb-hydro">
+<span class="table-title-icon">🌊</span>
+<span class="table-title-text">Table 2 · Hydrological &amp; Hydrometeorological Hazards</span>
+<span class="table-ref-count">8 Studies</span>
+</div>
+<table class="tb-hydro">
+<thead><tr>
+<th>Ref</th><th>Hazard Type</th><th>Risk Characteristics</th>
+<th>Exposure / Assets</th><th>DT Architecture</th><th>Obs. vs Modeled</th><th>Lead Time</th>
+</tr></thead>
+<tbody>
+<tr><td class="ref-cell">[1]</td><td>River (Flash) Flood</td><td>Event-Driven Flashiness</td><td>Tourists, Infra, Natural Assets</td><td>3D CNN-RNN Deep Learning</td><td>Real-time sensor / Sat DA</td><td><span class="tag-chip chip-st">Short-Term (Min–Hrs)</span></td></tr>
+<tr><td class="ref-cell">[2]</td><td>Water Cycle</td><td>Climate Sensitivity</td><td>Populations, Water Resources</td><td>Continuous DA (S3M on ADAMPlatform)</td><td>SAR corrects hydraulic state</td><td><span class="tag-chip chip-lt">Seasonal / 1–30 days</span></td></tr>
+<tr><td class="ref-cell">[3]</td><td>Fluvial Flood</td><td>Evolving Uncertainty</td><td>Catchment Infra, Floodplain</td><td>LISFLOOD-FP + Particle Filter</td><td>Drone/Sat DA vs Model</td><td><span class="tag-chip chip-st">Short-Term</span></td></tr>
+<tr><td class="ref-cell">[4]</td><td>Urban Flood</td><td>High Spatial Variability</td><td>Storm drains, Settlements</td><td>2D LiDAR/IoT/AI Replica</td><td>Real-time IoT vs Microtopo</td><td><span class="tag-chip chip-us">Ultra-Short</span></td></tr>
+<tr><td class="ref-cell">[5]</td><td>Urban Waterlog</td><td>Rapid Accumulation</td><td>Urban Traffic Assets</td><td>2D Hydrodynamic Modeling</td><td>Gauge vs Model</td><td><span class="tag-chip chip-st">Short-Term</span></td></tr>
+<tr><td class="ref-cell">[7]</td><td>Coastal Surge</td><td>Surge Dynamics</td><td>Coastal Cities, Ports</td><td>Hydrodynamic Coupled Modeling</td><td>Tide gauge vs Model</td><td><span class="tag-chip chip-st">Short-Term</span></td></tr>
+<tr><td class="ref-cell">[8]</td><td>Coastal Disaster</td><td>Non-stationary</td><td>Coastal Levees, Grids</td><td>Resilience DT Framework</td><td>Historical vs Model</td><td><span class="tag-chip chip-lt">Long-Term</span></td></tr>
+<tr><td class="ref-cell">[22]</td><td>Water Mgmt.</td><td>Interconnected</td><td>Basins, Supply Chains</td><td>HIP DT Architecture</td><td>Sensor DA vs Engine</td><td><span class="tag-chip chip-lt">Seasonal</span></td></tr>
+</tbody>
+</table>
+</div>
+<!-- TABLE 2: GEOPHYSICAL -->
+<div class="table-section">
+<div class="table-title-bar tb-geo">
+<span class="table-title-icon">🌋</span>
+<span class="table-title-text">Table 3 · Geophysical Hazards</span>
+<span class="table-ref-count">4 Studies</span>
+</div>
+<table class="tb-geo">
+<thead><tr>
+<th>Ref</th><th>Hazard Type</th><th>Risk Characteristics</th>
+<th>DT Architecture</th><th>Risk Metrics</th><th>Lead Time</th><th>Early Warning Output</th>
+</tr></thead>
+<tbody>
+<tr><td class="ref-cell">[10]</td><td>Urban Earthquake</td><td>Sudden Onset, Cascades</td><td>BIM+GIS fused with UAV/IoT</td><td>Damage state, Casualties</td><td><span class="tag-chip chip-us">Ultra-Short (Sec)</span></td><td>Instantaneous alerts</td></tr>
+<tr><td class="ref-cell">[11]</td><td>Seismic Waves</td><td>Invisibility, High Impact</td><td>3D Elastic Wave Engine + DAS</td><td>Peak Ground Accel. (PGA)</td><td><span class="tag-chip chip-us">Ultra-Short (Sec)</span></td><td>Faster-than-real-time</td></tr>
+<tr><td class="ref-cell">[18]</td><td>Volcanism</td><td>Multi-phase Latency</td><td>Multi-physics (magma, ash)</td><td>Eruption prob., Ashfall</td><td><span class="tag-chip chip-st">Variable</span></td><td>Multi-tier alerts</td></tr>
+<tr><td class="ref-cell">[19]</td><td>Regional Volcano</td><td>Continental Scale</td><td>Destination Earth Framework</td><td>Eruption Probabilities</td><td><span class="tag-chip chip-lt">Long-Term</span></td><td>Scenario on-demand</td></tr>
+</tbody>
+</table>
+</div>
+<!-- TABLE 3: CLIMATOLOGICAL -->
+<div class="table-section">
+<div class="table-title-bar tb-clim">
+<span class="table-title-icon">🔥</span>
+<span class="table-title-text">Table 4 · Climatological Hazards</span>
+<span class="table-ref-count">3 Studies</span>
+</div>
+<table class="tb-clim">
+<thead><tr>
+<th>Ref</th><th>Hazard Type</th><th>Exposure / Assets</th>
+<th>DT Architecture</th><th>Obs. vs Modeled</th><th>Lead Time</th><th>Socio-Econ Impact</th>
+</tr></thead>
+<tbody>
+<tr><td class="ref-cell">[24]</td><td>Urban Heat</td><td>Public Housing, Elderly</td><td>3D Morphological Modeling</td><td>Weather IoT vs Model</td><td><span class="tag-chip chip-lt">Seasonal</span></td><td>Equity-weighted risk</td></tr>
+<tr><td class="ref-cell">[26]</td><td>Wildfire</td><td>Forests, Grid Infrastructure</td><td>DA Tracking Frameworks</td><td>Satellite vs Physics</td><td><span class="tag-chip chip-st">Short-Term (Hrs)</span></td><td>Resource destruction</td></tr>
+<tr><td class="ref-cell">[27]</td><td>Wildfire</td><td>Vulnerable Populations</td><td>Physics-Informed NNs (PINNs)</td><td>Sensor DA Tracking</td><td><span class="tag-chip chip-st">Short-Term (Hrs)</span></td><td>Respiratory health</td></tr>
+</tbody>
+</table>
+</div>
+<!-- TABLE 4: NATECH -->
+<div class="table-section">
+<div class="table-title-bar tb-tech">
+<span class="table-title-icon">⚡</span>
+<span class="table-title-text">Table 5 · Technological &amp; Infrastructure Hazards (Natech)</span>
+<span class="table-ref-count">3 Studies</span>
+</div>
+<table class="tb-tech">
+<thead><tr>
+<th>Ref</th><th>Hazard Type</th><th>Exposure / Assets</th>
+<th>DT Architecture</th><th>Obs. vs Modeled</th><th>Lead Time</th><th>Early Warning Output</th>
+</tr></thead>
+<tbody>
+<tr><td class="ref-cell">[20]</td><td>Hurricane Infra</td><td>Power Grids, Transport</td><td>Network Graph Integration</td><td>Outage data vs Model</td><td><span class="tag-chip chip-st">Event-driven</span></td><td>Rerouting alerts</td></tr>
+<tr><td class="ref-cell">[25]</td><td>Urban Resilience</td><td>Lifelines, Utilities</td><td>Hybrid Socio-Technical DT</td><td>IoT vs Network Model</td><td><span class="tag-chip chip-st">Variable</span></td><td>Cascade alerts</td></tr>
+<tr><td class="ref-cell">[28]</td><td>Cascade Natech</td><td>Sensors, Smart Grids</td><td>Multi-layered Resilience Engine</td><td>Hard vs Soft data</td><td><span class="tag-chip chip-st">Variable</span></td><td>Systemic warning</td></tr>
+</tbody>
+</table>
+</div>
+<!-- TABLE 5: MULTI-HAZARD -->
+<div class="table-section">
+<div class="table-title-bar tb-multi">
+<span class="table-title-icon">🔗</span>
+<span class="table-title-text">Table 6 · Multi-Hazard &amp; Complex Disasters — Frontier Domain</span>
+<span class="table-ref-count">10 Studies</span>
+</div>
+<table class="tb-multi">
+<thead><tr>
+<th>Ref</th><th>Hazard Type</th><th>Exposure / Assets</th>
+<th>DT Architecture</th><th>Lead Time</th><th>Socio-Econ Impact / Early Warning</th>
+</tr></thead>
+<tbody>
+<tr><td class="ref-cell">[9]</td><td>Coastal Surge</td><td>Ports, Coastal Hubs</td><td>Delft3D-FM Multi-Model</td><td><span class="tag-chip chip-st">Short-Term</span></td><td>Asset devaluation / Scenario metrics</td></tr>
+<tr><td class="ref-cell">[12]</td><td>Complex Cascade</td><td>Smart Cities, Social Capital</td><td>Hybrid DRM Cycle Modeling</td><td><span class="tag-chip chip-st">Variable</span></td><td>Equity analysis, VaR / Adaptive eval</td></tr>
+<tr><td class="ref-cell">[13]</td><td>Landslide</td><td>Slopes, Transport</td><td>LDIDIF Inverse Analysis</td><td><span class="tag-chip chip-st">Short–Med</span></td><td>Highway isolation / Displacement</td></tr>
+<tr><td class="ref-cell">[14]</td><td>Landslide</td><td>Catchments</td><td>S3M Coupled Models</td><td><span class="tag-chip chip-lt">Seasonal</span></td><td>Regional disruption / Trend alerts</td></tr>
+<tr><td class="ref-cell">[15]</td><td>Landscape</td><td>Basins, Supply Chains</td><td>Multi-Model Integration</td><td><span class="tag-chip chip-lt">Long-Term</span></td><td>Macro-econ spillover / Policy insights</td></tr>
+<tr><td class="ref-cell">[16]</td><td>Tsunami</td><td>Seawalls, Shelters</td><td>Non-linear SWE Models</td><td><span class="tag-chip chip-us">Ultra-Short</span></td><td>Cascading failures / 10-min limit</td></tr>
+<tr><td class="ref-cell">[17]</td><td>Tsunami (Tohoku)</td><td>Coastal Infrastructure</td><td>Real-time Bayesian DT</td><td><span class="tag-chip chip-us">Ultra-Short</span></td><td>Life safety / Instant alerts</td></tr>
+<tr><td class="ref-cell">[21]</td><td>Climate Resilience</td><td>3D City Landscapes</td><td>Urban DT Framework</td><td><span class="tag-chip chip-lt">Seasonal</span></td><td>Policy integration / Thresholds</td></tr>
+<tr><td class="ref-cell">[23]</td><td>Drought</td><td>Agriculture</td><td>S3M Integration</td><td><span class="tag-chip chip-lt">Seasonal</span></td><td>Food security / Long-term</td></tr>
+</tbody>
+</table>
+</div>
+<!-- Contribution Summary -->
+<div class="subsection-title" style="margin-top:14px;">Key Contributions of This Systematic Review</div>
+<ul class="contrib-list">
+<li data-icon="🔭">Identification and naming of <strong>three distinct doctrinal paradigms</strong> in DRT literature (Engineering, Environmental, Risk-Oriented), providing a new conceptual vocabulary for the field.</li>
+<li data-icon="⚡">Formal delineation of the <strong>State-Space vs. Scenario-Space architectural divide</strong> as a physically-forced constraint, not a design choice—establishing the first rigorous taxonomy of synchronization paradigms.</li>
+<li data-icon="📐">Formulation of the <strong>Hybrid-Coupled Global State Vector Ω(t) = [H_t ⊗ E_t ⊗ V_t] · Σ_t⁻¹</strong> as a new mathematical ontology for fully-coupled disaster risk twins.</li>
+<li data-icon="🧬">Documentation of the <strong>Social-Physical Coupling Failure</strong> as the primary structural limitation across all current DRT implementations, with quantified impact on risk estimation fidelity.</li>
+<li data-icon="🛠️">Specification of three mandatory architectural pillars—<strong>Federated Twins, Self-Healing Mechanisms, and Cognitive Interfaces</strong>—as actionable research directions for next-generation DRT systems.</li>
+</ul>
+</div>
+<div class="page-footer">
+<div class="page-footer-text">Digital Risk Twins: Systematic Review · Post-2020 Literature Synthesis  |  © 2026</div>
+<div class="page-footer-dots">
+<div class="page-footer-dot"></div><div class="page-footer-dot"></div>
+<div class="page-footer-dot"></div><div class="page-footer-dot active"></div>
+</div>
+</div>
+</div>
+
+<div class="page" style="margin-top:4mm;">
+<div class="page-header">
+<div class="page-header-left">
+<div class="page-header-title">Digital Risk Twins — Systematic Review</div>
+</div>
+<div class="page-header-right">Complete References</div>
+</div>
+<div class="content-body">
+<div class="section-header" id="complete-references">
+<div class="section-num">4</div>
+<div class="section-title">Complete References</div>
+</div>
+<ol class="ref-list">
+<li class="ref-item">Eom et al. (2025). Digital Twin Framework for River Flood Risk Assessment. <a href="https://www.mdpi.com/2227-7390/13/11/1696" rel="noopener noreferrer" target="_blank">https://www.mdpi.com/2227-7390/13/11/1696</a></li>
+<li class="ref-item">A digital twin for the water cycle. <a href="https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/" rel="noopener noreferrer" target="_blank">https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/</a></li>
+<li class="ref-item">Towards Digital Twin in Flood Forecasting with Data Assimilation Satellite EO. <a href="https://arxiv.org/abs/2505.08553" rel="noopener noreferrer" target="_blank">https://arxiv.org/abs/2505.08553</a></li>
+<li class="ref-item">Urban Flood Digital Twin Review (2024). <a href="https://www.mdpi.com/2072-4292/17/17/3104" rel="noopener noreferrer" target="_blank">https://www.mdpi.com/2072-4292/17/17/3104</a></li>
+<li class="ref-item">Development and application of digital twin system for urban flood: Case study of Fuzhou City. <a href="https://zqqk.org.cn/en/article/doi/10.16867/j.issn.1673-9264.2022160" rel="noopener noreferrer" target="_blank">https://zqqk.org.cn/en/article/doi/10.16867/j.issn.1673-9264.2022160</a></li>
+<li class="ref-item">Alzette Catchment Flood Digital Twin: Proof-of-Concept. <a href="https://arxiv.org/abs/2505.08553" rel="noopener noreferrer" target="_blank">https://arxiv.org/abs/2505.08553</a></li>
+<li class="ref-item">Yu et al. (2024). Digital Twin for Coastal Flood Risk Assessment. <a href="https://www.sciencedirect.com/science/article/pii/S2667325824002619" rel="noopener noreferrer" target="_blank">https://www.sciencedirect.com/science/article/pii/S2667325824002619</a></li>
+<li class="ref-item">Digital twin paradigm for coastal disaster risk reduction and resilience. <a href="https://www.sciencedirect.com/science/article/abs/pii/B9780443189876000245" rel="noopener noreferrer" target="_blank">https://www.sciencedirect.com/science/article/abs/pii/B9780443189876000245</a></li>
+<li class="ref-item">Destination Earth initiative (DestinE) – Coastal Flood Component. <a href="https://en.wikipedia.org/wiki/Destination_Earth_%28European_Union%29" rel="noopener noreferrer" target="_blank">https://en.wikipedia.org/wiki/Destination_Earth_%28European_Union%29</a></li>
+<li class="ref-item">Yu et al. (2023). Digital Twin for Earthquake Risk Assessment. <a href="https://www.tandfonline.com/doi/full/10.1080/19475705.2023.2278274" rel="noopener noreferrer" target="_blank">https://www.tandfonline.com/doi/full/10.1080/19475705.2023.2278274</a></li>
+<li class="ref-item">Harnessing the potential of digital twins in seismology. <a href="https://www.nature.com/articles/s43017-023-00469-y" rel="noopener noreferrer" target="_blank">https://www.nature.com/articles/s43017-023-00469-y</a></li>
+<li class="ref-item">Rethinking digital twin: Introducing digital risk twin for disaster risk management. <a href="https://www.nature.com/articles/s44304-025-00135-x" rel="noopener noreferrer" target="_blank">https://www.nature.com/articles/s44304-025-00135-x</a></li>
+<li class="ref-item">Ju et al. (2025). Digital Twin for Landslide Risk Modeling. <a href="https://www.sciencedirect.com/science/article/abs/pii/S0013795225002121" rel="noopener noreferrer" target="_blank">https://www.sciencedirect.com/science/article/abs/pii/S0013795225002121</a></li>
+<li class="ref-item">A digital twin for the water cycle (with landslide processes). <a href="https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/" rel="noopener noreferrer" target="_blank">https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/</a></li>
+<li class="ref-item">Landscape Digital Twin Framework for multi-hazard risk analysis. <a href="https://www.preprints.org/manuscript/202307.1608" rel="noopener noreferrer" target="_blank">https://www.preprints.org/manuscript/202307.1608</a></li>
+<li class="ref-item">Henneking et al. (2025). Real-time Bayesian Digital Twin for Tsunami Early Warning. <a href="https://arxiv.org/abs/2504.16344" rel="noopener noreferrer" target="_blank">https://arxiv.org/abs/2504.16344</a></li>
+<li class="ref-item">IRIDeS Tsunami Digital Twin Project – Tohoku University. <a href="https://irides.tohoku.ac.jp/eng/research/co-creation_project/2025.html" rel="noopener noreferrer" target="_blank">https://irides.tohoku.ac.jp/eng/research/co-creation_project/2025.html</a></li>
+<li class="ref-item">DT-GEO Project: Volcano Digital Twin. <a href="https://www.researchgate.net/publication/376651232" rel="noopener noreferrer" target="_blank">https://www.researchgate.net/publication/376651232</a></li>
+<li class="ref-item">Destination Earth initiative (volcano hazard component). <a href="https://en.wikipedia.org/wiki/Destination_Earth_%28European_Union%29" rel="noopener noreferrer" target="_blank">https://en.wikipedia.org/wiki/Destination_Earth_%28European_Union%29</a></li>
+<li class="ref-item">Braik et al. (2024). Digital Twin for Hurricane Infrastructure Recovery. <a href="https://www.sciencedirect.com/science/article/pii/S2772741624000310" rel="noopener noreferrer" target="_blank">https://www.sciencedirect.com/science/article/pii/S2772741624000310</a></li>
+<li class="ref-item">Management of Climate Resilience: Digital Twin, 3D City Modeling, and Early Warning Systems. <a href="https://pubmed.ncbi.nlm.nih.gov/36904867/" rel="noopener noreferrer" target="_blank">https://pubmed.ncbi.nlm.nih.gov/36904867/</a></li>
+<li class="ref-item">Henriksen et al. (2023). HIP Digital Twin for Climate Adaptation Water Management. <a href="https://www.mdpi.com/2073-4441/15/1/25" rel="noopener noreferrer" target="_blank">https://www.mdpi.com/2073-4441/15/1/25</a></li>
+<li class="ref-item">A digital twin for the water cycle (drought processes). <a href="https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/" rel="noopener noreferrer" target="_blank">https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/</a></li>
+<li class="ref-item">Cárdenas-León et al. (2024). Digital Twin for Urban Heat Resilience. <a href="https://isprs-annals.copernicus.org/articles/X-4-2024/67/2024/" rel="noopener noreferrer" target="_blank">https://isprs-annals.copernicus.org/articles/X-4-2024/67/2024/</a></li>
+<li class="ref-item">Hazard-Responsive Digital Twin for Climate-Driven Urban Resilience. <a href="https://arxiv.org/abs/2510.22941" rel="noopener noreferrer" target="_blank">https://arxiv.org/abs/2510.22941</a></li>
+<li class="ref-item">Huang et al. (2024). Modeling of Wildfire Digital Twin: Research Progress. <a href="https://www.mdpi.com/2571-6255/7/11/412" rel="noopener noreferrer" target="_blank">https://www.mdpi.com/2571-6255/7/11/412</a></li>
+<li class="ref-item">FIRETWIN: Digital Twin for Wildfire Response. <a href="https://arxiv.org/abs/2510.18879" rel="noopener noreferrer" target="_blank">https://arxiv.org/abs/2510.18879</a></li>
+<li class="ref-item">Hazard-Responsive Digital Twin for Wildfire Heat. <a href="https://arxiv.org/abs/2510.22941" rel="noopener noreferrer" target="_blank">https://arxiv.org/abs/2510.22941</a></li>
+</ol>
+</div>
+<div class="page-footer">
+<div class="page-footer-text">Digital Risk Twins: Systematic Review · Complete References</div>
+<div class="page-footer-dots">
+<div class="page-footer-dot"></div><div class="page-footer-dot"></div>
+<div class="page-footer-dot"></div><div class="page-footer-dot"></div>
+</div>
+</div>
+</div>
+<script>
+(function() {
+  // Reference data extracted from the document
+  const references = {
+    1: { text: 'Eom et al. (2025). Digital Twin Framework for River Flood Risk Assessment.', url: 'https://www.mdpi.com/2227-7390/13/11/1696' },
+    2: { text: 'A digital twin for the water cycle.', url: 'https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/' },
+    3: { text: 'Towards Digital Twin in Flood Forecasting with Data Assimilation Satellite EO.', url: 'https://arxiv.org/abs/2505.08553' },
+    4: { text: 'Urban Flood Digital Twin Review (2024).', url: 'https://www.mdpi.com/2072-4292/17/17/3104' },
+    5: { text: 'Development and application of digital twin system for urban flood: Case study of Fuzhou City.', url: 'https://zqqk.org.cn/en/article/doi/10.16867/j.issn.1673-9264.2022160' },
+    6: { text: 'Alzette Catchment Flood Digital Twin: Proof-of-Concept.', url: 'https://arxiv.org/abs/2505.08553' },
+    7: { text: 'Yu et al. (2024). Digital Twin for Coastal Flood Risk Assessment.', url: 'https://www.sciencedirect.com/science/article/pii/S2667325824002619' },
+    8: { text: 'Digital twin paradigm for coastal disaster risk reduction and resilience.', url: 'https://www.sciencedirect.com/science/article/abs/pii/B9780443189876000245' },
+    9: { text: 'Destination Earth initiative (DestinE) – Coastal Flood Component.', url: 'https://en.wikipedia.org/wiki/Destination_Earth_%28European_Union%29' },
+    10: { text: 'Yu et al. (2023). Digital Twin for Earthquake Risk Assessment.', url: 'https://www.tandfonline.com/doi/full/10.1080/19475705.2023.2278274' },
+    11: { text: 'Harnessing the potential of digital twins in seismology.', url: 'https://www.nature.com/articles/s43017-023-00469-y' },
+    12: { text: 'Rethinking digital twin: Introducing digital risk twin for disaster risk management.', url: 'https://www.nature.com/articles/s44304-025-00135-x' },
+    13: { text: 'Ju et al. (2025). Digital Twin for Landslide Risk Modeling.', url: 'https://www.sciencedirect.com/science/article/abs/pii/S0013795225002121' },
+    14: { text: 'A digital twin for the water cycle (with landslide processes).', url: 'https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/' },
+    15: { text: 'Landscape Digital Twin Framework for multi-hazard risk analysis.', url: 'https://www.preprints.org/manuscript/202307.1608' },
+    16: { text: 'Henneking et al. (2025). Real-time Bayesian Digital Twin for Tsunami Early Warning.', url: 'https://arxiv.org/abs/2504.16344' },
+    17: { text: 'IRIDeS Tsunami Digital Twin Project – Tohoku University.', url: 'https://irides.tohoku.ac.jp/eng/research/co-creation_project/2025.html' },
+    18: { text: 'DT-GEO Project: Volcano Digital Twin.', url: 'https://www.researchgate.net/publication/376651232' },
+    19: { text: 'Destination Earth initiative (volcano hazard component).', url: 'https://en.wikipedia.org/wiki/Destination_Earth_%28European_Union%29' },
+    20: { text: 'Braik et al. (2024). Digital Twin for Hurricane Infrastructure Recovery.', url: 'https://www.sciencedirect.com/science/article/pii/S2772741624000310' },
+    21: { text: 'Management of Climate Resilience: Digital Twin, 3D City Modeling, and Early Warning Systems.', url: 'https://pubmed.ncbi.nlm.nih.gov/36904867/' },
+    22: { text: 'Henriksen et al. (2023). HIP Digital Twin for Climate Adaptation Water Management.', url: 'https://www.mdpi.com/2073-4441/15/1/25' },
+    23: { text: 'A digital twin for the water cycle (drought processes).', url: 'https://www.cimafoundation.org/en/news/a-digital-twin-for-the-water-cycle/' },
+    24: { text: 'Cárdenas-León et al. (2024). Digital Twin for Urban Heat Resilience.', url: 'https://isprs-annals.copernicus.org/articles/X-4-2024/67/2024/' },
+    25: { text: 'Hazard-Responsive Digital Twin for Climate-Driven Urban Resilience.', url: 'https://arxiv.org/abs/2510.22941' },
+    26: { text: 'Huang et al. (2024). Modeling of Wildfire Digital Twin: Research Progress.', url: 'https://www.mdpi.com/2571-6255/7/11/412' },
+    27: { text: 'FIRETWIN: Digital Twin for Wildfire Response.', url: 'https://arxiv.org/abs/2510.18879' },
+    28: { text: 'Hazard-Responsive Digital Twin for Wildfire Heat.', url: 'https://arxiv.org/abs/2510.22941' }
+  };
+
+  // Initialize reference cells with tooltips and click handlers
+  function initializeReferenceCells() {
+    const refCells = document.querySelectorAll('.ref-cell');
+    
+    refCells.forEach(cell => {
+      const refText = cell.textContent.trim();
+      const refNum = parseInt(refText.replace(/[\[\]]/g, ''));
+      
+      if (references[refNum]) {
+        const refData = references[refNum];
+        
+        // Create tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'ref-tooltip';
+        tooltip.innerHTML = `
+          <div class="ref-tooltip-text">${refData.text}</div>
+          <a class="ref-tooltip-link" href="${refData.url}" target="_blank" rel="noopener noreferrer">
+            ${refData.url}
+          </a>
+        `;
+        
+        cell.appendChild(tooltip);
+        
+        // Add click handler to open the link
+        cell.style.cursor = 'pointer';
+        cell.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.open(refData.url, '_blank', 'noopener,noreferrer');
+        });
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeReferenceCells);
+  } else {
+    initializeReferenceCells();
+  }
+})();
+</script>
+</body>
+</html>
